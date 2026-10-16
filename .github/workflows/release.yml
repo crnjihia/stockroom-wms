@@ -1,0 +1,62 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Build & Publish GitHub Release
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: maven
+
+      - name: Build Release Artifacts with Maven
+        run: mvn -B clean package --file pom.xml
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: Stockroom WMS ${{ github.ref_name }}
+          tag_name: ${{ github.ref_name }}
+          draft: false
+          prerelease: false
+          generate_release_notes: true
+          body: |
+            ## Stockroom WMS - Enterprise FMCG Warehouse Management System
+
+            ### Release Highlights
+            - **Multi-Depot Inventory Management**: Real-time stock tracking across Nairobi depots (NBO-01 Central Depot, NBO-02 Embakasi Transit Hub, NBO-03 Baba Dogo Distribution).
+            - **Reservation & Backorder Automation**: 2-hour sliding expiry windows, optimistic locking with concurrency retry, and automated backorder generation upon low available stock.
+            - **Barcode & GS1 Scanner Engine**: Support for EAN-13 and GS1-128 Application Identifiers (`(01)` GTIN, `(10)` Batch, `(17)` Expiry, `(21)` Serial).
+            - **JasperReports & Apache POI Reporting**: Precompiled Jasper binary templates for PDF export and styled Excel reporting with formulas (FIFO valuation, low-stock triggers, stock movements ledger).
+            - **Spring Batch Historical Ledger Export**: Chunk-based processing (1000 items per chunk) for large-scale stock movement auditing.
+            - **Observability**: Prometheus metrics (`/actuator/prometheus`) and Grafana dashboard provisioning.
+
+            ### Included Release Assets
+            - Standalone executable Spring Boot application JAR (`stockroom-wms-1.0.0.jar`)
+            - Sample PDF and XLSX inventory reports
+            - Postman API collection
+            - Docker Compose infrastructure stack
+          files: |
+            target/stockroom-wms-*.jar
+            samples/inventory_report.pdf
+            samples/inventory_report.xlsx
+            samples/low_stock_report.pdf
+            samples/movements_report.xlsx
+            samples/valuation_report.xlsx
+            postman/Stockroom_WMS.postman_collection.json
+            docker-compose.yml
