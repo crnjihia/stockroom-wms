@@ -51,6 +51,7 @@ public class SampleReportsGenerator {
     private BackorderRepository backorderRepository;
 
     @Test
+    @org.junit.jupiter.api.Disabled("Offline artifact generator - not part of CI regression suite")
     @DisplayName("Generate Sample PDF and Excel reports into /samples directory")
     void generateSampleOutputs() throws Exception {
         reservationRepository.deleteAll();

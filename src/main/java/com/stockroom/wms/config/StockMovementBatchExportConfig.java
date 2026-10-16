@@ -26,7 +26,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Configuration
-@EnableBatchProcessing
 public class StockMovementBatchExportConfig {
 
     public static final int CHUNK_SIZE = 1000;
