@@ -513,12 +513,19 @@ public class ReportService {
         try {
             JasperReport jasperReport = null;
             String jasperPath = templateClasspath.replace(".jrxml", ".jasper");
-            InputStream jasperStream = getClass().getResourceAsStream(jasperPath);
-            if (jasperStream != null) {
-                try (jasperStream) {
-                    jasperReport = (JasperReport) net.sf.jasperreports.engine.util.JRLoader.loadObject(jasperStream);
+            try {
+                InputStream jasperStream = getClass().getResourceAsStream(jasperPath);
+                if (jasperStream != null) {
+                    try (jasperStream) {
+                        jasperReport = (JasperReport) net.sf.jasperreports.engine.util.JRLoader.loadObject(jasperStream);
+                    }
                 }
-            } else {
+            } catch (Throwable t) {
+                log.warn("Could not deserialize precompiled jasper file {}, compiling from jrxml: {}", jasperPath, t.getMessage());
+                jasperReport = null;
+            }
+
+            if (jasperReport == null) {
                 try (InputStream stream = getClass().getResourceAsStream(templateClasspath)) {
                     if (stream == null) {
                         throw new IllegalStateException("Jasper template not found: " + templateClasspath);

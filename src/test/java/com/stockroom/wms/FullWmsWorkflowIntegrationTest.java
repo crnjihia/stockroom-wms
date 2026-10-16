@@ -56,6 +56,9 @@ public class FullWmsWorkflowIntegrationTest {
     @Autowired
     private StockReturnRepository returnRepository;
 
+    @Autowired
+    private BackorderRepository backorderRepository;
+
     private Product product;
     private Warehouse warehouse;
     private Location storageLoc;
@@ -65,6 +68,7 @@ public class FullWmsWorkflowIntegrationTest {
     void setUp() {
         returnRepository.deleteAll();
         reservationRepository.deleteAll();
+        backorderRepository.deleteAll();
         stockMovementRepository.deleteAll();
         stockItemRepository.deleteAll();
         locationRepository.deleteAll();
