@@ -1,0 +1,122 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    container_name: stockroom-wms-app
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/stockroom_db
+      SPRING_DATASOURCE_USERNAME: stockroom_user
+      SPRING_DATASOURCE_PASSWORD: stockroom_pass
+      SPRING_DATA_REDIS_HOST: redis
+      SPRING_DATA_REDIS_PORT: 6379
+      MINIO_ENDPOINT: http://minio:9000
+      MINIO_ACCESS_KEY: minioadmin
+      MINIO_SECRET_KEY: minioadmin
+      MINIO_BUCKET: stockroom-reports
+      JWT_SECRET: 404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - stockroom-network
+
+  postgres:
+    image: postgres:15-alpine
+    container_name: stockroom-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: stockroom_db
+      POSTGRES_USER: stockroom_user
+      POSTGRES_PASSWORD: stockroom_pass
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U stockroom_user -d stockroom_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - stockroom-network
+
+  redis:
+    image: redis:7-alpine
+    container_name: stockroom-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - stockroom-network
+
+  minio:
+    image: minio/minio:RELEASE.2023-09-30T07-02-29Z
+    container_name: stockroom-minio
+    restart: unless-stopped
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - minio_data:/data
+    networks:
+      - stockroom-network
+
+  prometheus:
+    image: prom/prometheus:v2.48.0
+    container_name: stockroom-prometheus
+    restart: unless-stopped
+    volumes:
+      - ./docker/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    ports:
+      - "9090:9090"
+    networks:
+      - stockroom-network
+
+  grafana:
+    image: grafana/grafana:10.2.0
+    container_name: stockroom-grafana
+    restart: unless-stopped
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_USERS_ALLOW_SIGN_UP=false
+    volumes:
+      - ./docker/grafana/provisioning:/etc/grafana/provisioning
+      - ./docker/grafana/dashboards:/var/lib/grafana/dashboards
+      - grafana_data:/var/lib/grafana
+    ports:
+      - "3000:3000"
+    depends_on:
+      - prometheus
+    networks:
+      - stockroom-network
+
+volumes:
+  postgres_data:
+  redis_data:
+  minio_data:
+  prometheus_data:
+  grafana_data:
+
+networks:
+  stockroom-network:
+    driver: bridge

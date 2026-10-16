@@ -1,0 +1,722 @@
+{
+  "info": {
+    "_postman_id": "f5e9d300-11b0-4660-84c1-9f20e8b2ec01",
+    "name": "Stockroom WMS - Kenyan FMCG Operations",
+    "description": "Complete Postman API Collection for Stockroom WMS: Multi-depot Nairobi inventory, optimistic locking reservations, immutable ledger, GS1-128 barcode simulation, and enterprise PDF/Excel reporting.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080/api/v1",
+      "type": "string"
+    },
+    {
+      "key": "authToken",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "1. Authentication",
+      "item": [
+        {
+          "name": "Login (Admin)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.token) {",
+                  "    pm.collectionVariables.set('authToken', jsonData.token);",
+                  "    pm.environment.set('authToken', jsonData.token);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"admin\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "login"]
+            }
+          }
+        },
+        {
+          "name": "Login (Manager)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"manager\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "login"]
+            }
+          }
+        },
+        {
+          "name": "Register User",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"supervisor_nbo\",\n  \"password\": \"password123\",\n  \"fullName\": \"Juma Bakari\",\n  \"email\": \"juma.bakari@stockroom.co.ke\",\n  \"role\": \"WAREHOUSE_MANAGER\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "register"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Warehouses & Locations",
+      "item": [
+        {
+          "name": "List Warehouses",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{authToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/warehouses",
+              "host": ["{{baseUrl}}"],
+              "path": ["warehouses"]
+            }
+          }
+        },
+        {
+          "name": "Get Warehouse by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{authToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/warehouses/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["warehouses", "1"]
+            }
+          }
+        },
+        {
+          "name": "Create Warehouse (Admin Only)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{authToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"code\": \"NBO-04\",\n  \"name\": \"Westlands Cold Storage & Rapid Hub\",\n  \"county\": \"Nairobi\",\n  \"town\": \"Westlands\",\n  \"address\": \"Waiyaki Way, Near ABC Place, Nairobi\",\n  \"managerId\": 2,\n  \"active\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/warehouses",
+              "host": ["{{baseUrl}}"],
+              "path": ["warehouses"]
+            }
+          }
+        },
+        {
+          "name": "List Locations in Depot",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{authToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/warehouses/1/locations",
+              "host": ["{{baseUrl}}"],
+              "path": ["warehouses", "1", "locations"]
+            }
+          }
+        },
+        {
+          "name": "Create Location in Depot",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{authToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"code\": \"A-02-01\",\n  \"zone\": \"STORAGE\",\n  \"capacityUnits\": 2500\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/warehouses/1/locations",
+              "host": ["{{baseUrl}}"],
+              "path": ["warehouses", "1", "locations"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. Products Catalogue",
+      "item": [
+        {
+          "name": "List Products (Search & Filter)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{authToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/products?query=Maize&category=Dry Foods&page=0&size=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["products"],
+              "query": [
+                { "key": "query", "value": "Maize" },
+                { "key": "category", "value": "Dry Foods" },
+                { "key": "page", "value": "0" },
+                { "key": "size", "value": "10" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Product Stock Summary (Multi-Warehouse)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{authToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/products/1/stock",
+              "host": ["{{baseUrl}}"],
+              "path": ["products", "1", "stock"]
+            }
+          }
+        },
+        {
+          "name": "Create Product",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{authToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"sku\": \"ROY-MCH-500G\",\n  \"name\": \"Royco Mchuzi Mix Beef 500g\",\n  \"description\": \"Aromatic food seasoning powder beef flavor container\",\n  \"category\": \"Seasonings\",\n  \"unitOfMeasure\": \"CARTON\",\n  \"barcode\": \"06161107890123\",\n  \"reorderPoint\": 60,\n  \"reorderQty\": 180,\n  \"unitCost\": 320.00,\n  \"unitPrice\": 390.00\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/products",
+              "host": ["{{baseUrl}}"],
+              "path": ["products"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. Stock Operations",
+      "item": [
+        {
+          "name": "Receive Stock (GRN)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{authToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"productId\": 1,\n  \"locationId\": 2,\n  \"quantity\": 100,\n  \"batchNumber\": \"BAT-PMB-2026B\",\n  \"expiryDate\": \"2027-08-31\",\n  \"reference\": \"PO-NBO-2026-901\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/stock/receive",
+              "host": ["{{baseUrl}}"],
+              "path": ["stock", "receive"]
+            }
+          }
+        },
+        {
+          "name": "Issue Stock (Dispatch)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{authToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"productId\": 1,\n  \"locationId\": 2,\n  \"quantity\": 20,\n  \"batchNumber\": \"BAT-PMB-2026B\",\n  \"reference\": \"DO-SUPERMARKET-110\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/stock/issue",
+              "host": ["{{baseUrl}}"],
+              "path": ["stock", "issue"]
+            }
+          }
+        },
+        {
+          "name": "Transfer Stock (Inter-Location / Inter-Depot)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{authToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fromLocationId\": 2,\n  \"toLocationId\": 9,\n  \"productId\": 1,\n  \"batchNumber\": \"BAT-PMB-2026A\",\n  \"quantity\": 50,\n  \"notes\": \"Rebalancing inventory between Industrial Area (NBO-01) and Embakasi (NBO-02)\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/stock/transfer",
+              "host": ["{{baseUrl}}"],
+              "path": ["stock", "transfer"]
+            }
+          }
+        },
+        {
+          "name": "Adjust Stock (Manager Only)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{authToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"productId\": 1,\n  \"locationId\": 2,\n  \"batchNumber\": \"BAT-PMB-2026A\",\n  \"newQuantity\": 398,\n  \"reason\": \"Cycle count variance reconciliation (-2 damaged in transit)\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/stock/adjust",
+              "host": ["{{baseUrl}}"],
+              "path": ["stock", "adjust"]
+            }
+          }
+        },
+        {
+          "name": "Query Stock Movements Ledger",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{authToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/stock/movements?productId=1",
+              "host": ["{{baseUrl}}"],
+              "path": ["stock", "movements"],
+              "query": [
+                { "key": "productId", "value": "1" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Assert Ledger Reconciliation Invariant",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{authToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/stock/reconcile?productId=1&locationId=2",
+              "host": ["{{baseUrl}}"],
+              "path": ["stock", "reconcile"],
+              "query": [
+                { "key": "productId", "value": "1" },
+                { "key": "locationId", "value": "2" }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "5. Reservations",
+      "item": [
+        {
+          "name": "Create Reservation (Optimistic Locking)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{authToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"orderId\": \"ORD-NAKURU-501\",\n  \"productId\": 1,\n  \"warehouseId\": 1,\n  \"quantity\": 25,\n  \"ttlMinutes\": 45\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/reservations",
+              "host": ["{{baseUrl}}"],
+              "path": ["reservations"]
+            }
+          }
+        },
+        {
+          "name": "Fulfill Reservation (Dispatch)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{authToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/reservations/1/fulfill",
+              "host": ["{{baseUrl}}"],
+              "path": ["reservations", "1", "fulfill"]
+            }
+          }
+        },
+        {
+          "name": "Release Reservation (Cancel Hold)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{authToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/reservations/1/release",
+              "host": ["{{baseUrl}}"],
+              "path": ["reservations", "1", "release"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "6. Backorders",
+      "item": [
+        {
+          "name": "Get Backorders List",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{authToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/backorders?status=PENDING",
+              "host": ["{{baseUrl}}"],
+              "path": ["backorders"],
+              "query": [
+                { "key": "status", "value": "PENDING" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Fulfill Backorder",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{authToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"locationId\": 2,\n  \"quantity\": 10\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/backorders/1/fulfill",
+              "host": ["{{baseUrl}}"],
+              "path": ["backorders", "1", "fulfill"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "7. Returns",
+      "item": [
+        {
+          "name": "Register Return",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{authToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"originalOrderId\": \"ORD-NAKURU-501\",\n  \"productId\": 1,\n  \"quantity\": 5,\n  \"reason\": \"WRONG_ITEM\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/returns",
+              "host": ["{{baseUrl}}"],
+              "path": ["returns"]
+            }
+          }
+        },
+        {
+          "name": "Inspect Return",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{authToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"inspectionNotes\": \"Packs intact, clean factory seal, batch valid for restock\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/returns/1/inspect",
+              "host": ["{{baseUrl}}"],
+              "path": ["returns", "1", "inspect"]
+            }
+          }
+        },
+        {
+          "name": "Restock Return",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{authToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"targetLocationId\": 2,\n  \"batchNumber\": \"BAT-PMB-2026A\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/returns/1/restock",
+              "host": ["{{baseUrl}}"],
+              "path": ["returns", "1", "restock"]
+            }
+          }
+        },
+        {
+          "name": "Scrap Return",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{authToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/returns/1/scrap?notes=Damaged+seal+rejected+by+QC",
+              "host": ["{{baseUrl}}"],
+              "path": ["returns", "1", "scrap"],
+              "query": [
+                { "key": "notes", "value": "Damaged+seal+rejected+by+QC" }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "8. Barcode & GS1",
+      "item": [
+        {
+          "name": "Scan Barcode Simulation (IN)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{authToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"barcode\": \"(01)06161101234566(10)BAT-PMB-2026A(17)270630(21)SN-998877\",\n  \"action\": \"IN\",\n  \"locationId\": 2,\n  \"quantity\": 10\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/barcode/scan",
+              "host": ["{{baseUrl}}"],
+              "path": ["barcode", "scan"]
+            }
+          }
+        },
+        {
+          "name": "Scan Barcode Simulation (OUT)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{authToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"barcode\": \"(01)06161101234566(10)BAT-PMB-2026A(17)270630\",\n  \"action\": \"OUT\",\n  \"locationId\": 2,\n  \"quantity\": 5\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/barcode/scan",
+              "host": ["{{baseUrl}}"],
+              "path": ["barcode", "scan"]
+            }
+          }
+        },
+        {
+          "name": "Generate GS1-128 Barcode Image (PNG)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{authToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/barcode/generate/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["barcode", "generate", "1"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "9. Reports & Analytics",
+      "item": [
+        {
+          "name": "Export Inventory PDF (JasperReports)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{authToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/reports/inventory.pdf?warehouseId=1",
+              "host": ["{{baseUrl}}"],
+              "path": ["reports", "inventory.pdf"],
+              "query": [
+                { "key": "warehouseId", "value": "1" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Export Inventory XLSX (Apache POI)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{authToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/reports/inventory.xlsx",
+              "host": ["{{baseUrl}}"],
+              "path": ["reports", "inventory.xlsx"]
+            }
+          }
+        },
+        {
+          "name": "Export Low-Stock Report PDF",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{authToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/reports/low-stock.pdf",
+              "host": ["{{baseUrl}}"],
+              "path": ["reports", "low-stock.pdf"]
+            }
+          }
+        },
+        {
+          "name": "Export Stock Movements XLSX",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{authToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/reports/movements.xlsx",
+              "host": ["{{baseUrl}}"],
+              "path": ["reports", "movements.xlsx"]
+            }
+          }
+        },
+        {
+          "name": "Export FIFO Valuation XLSX",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{authToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/reports/valuation.xlsx",
+              "host": ["{{baseUrl}}"],
+              "path": ["reports", "valuation.xlsx"]
+            }
+          }
+        },
+        {
+          "name": "Submit Asynchronous Report Job",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{authToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"reportType\": \"VALUATION_XLSX\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/reports/async",
+              "host": ["{{baseUrl}}"],
+              "path": ["reports", "async"]
+            }
+          }
+        },
+        {
+          "name": "Poll Report Job Status",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{authToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/reports/jobs/{{jobId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["reports", "jobs", "{{jobId}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "10. Observability & Actuator",
+      "item": [
+        {
+          "name": "Prometheus Metrics Scrape Endpoint",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/../actuator/prometheus",
+              "host": ["{{baseUrl}}"],
+              "path": ["..", "actuator", "prometheus"]
+            }
+          }
+        },
+        {
+          "name": "Application Health Check",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/../actuator/health",
+              "host": ["{{baseUrl}}"],
+              "path": ["..", "actuator", "health"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
