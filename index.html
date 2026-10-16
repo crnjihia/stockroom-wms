@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stockroom WMS | Enterprise FMCG Warehouse Management System</title>
+  <meta name="description" content="Next-generation multi-depot warehouse management system for Kenyan FMCG distributors and logistics operators across Nairobi.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<div class="app-container">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+          <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+          <line x1="12" y1="22.08" x2="12" y2="12"></line>
+        </svg>
+      </div>
+      <div>
+        <div class="brand-title">Stockroom WMS</div>
+        <span class="brand-badge">Nairobi FMCG</span>
+      </div>
+    </div>
+
+    <nav class="nav-menu">
+      <div class="nav-label">Core Operations</div>
+      
+      <a class="nav-item active" data-view="overview" onclick="navigateTo('overview')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="3" width="7" height="7"></rect>
+          <rect x="14" y="3" width="7" height="7"></rect>
+          <rect x="14" y="14" width="7" height="7"></rect>
+          <rect x="3" y="14" width="7" height="7"></rect>
+        </svg>
+        <span>Dashboard</span>
+      </a>
+
+      <a class="nav-item" data-view="depots" onclick="navigateTo('depots')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+          <polyline points="9 22 9 12 15 12 15 22"></polyline>
+        </svg>
+        <span>Nairobi Depots</span>
+        <span class="badge">3</span>
+      </a>
+
+      <a class="nav-item" data-view="inventory" onclick="navigateTo('inventory')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="16.5" y1="9.4" x2="7.5" y2="4.21"></line>
+          <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+          <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+          <line x1="12" y1="22.08" x2="12" y2="12"></line>
+        </svg>
+        <span>Stock & Bins</span>
+      </a>
+
+      <a class="nav-item" data-view="reservations" onclick="navigateTo('reservations')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polyline points="12 6 12 12 16 14"></polyline>
+        </svg>
+        <span>Reservations</span>
+        <span class="badge badge-amber">2</span>
+      </a>
+
+      <div class="nav-label">Smart Tools</div>
+
+      <a class="nav-item" data-view="barcode" onclick="navigateTo('barcode')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M3 5v14M8 5v14M12 5v14M17 5v14M21 5v14"></path>
+        </svg>
+        <span>Barcode Scanner</span>
+      </a>
+
+      <a class="nav-item" data-view="reports" onclick="navigateTo('reports')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+          <polyline points="14 2 14 8 20 8"></polyline>
+          <line x1="16" y1="13" x2="8" y2="13"></line>
+          <line x1="16" y1="17" x2="8" y2="17"></line>
+          <polyline points="10 9 9 9 8 9"></polyline>
+        </svg>
+        <span>Reports & Analytics</span>
+      </a>
+
+      <a class="nav-item" data-view="movements" onclick="navigateTo('movements')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="17 1 21 5 17 9"></polyline>
+          <path d="M3 11V9a4 4 0 0 1 4-4h14"></path>
+          <polyline points="7 23 3 19 7 15"></polyline>
+          <path d="M21 13v2a4 4 0 0 1-4 4H3"></path>
+        </svg>
+        <span>Movements Ledger</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="user-avatar">AO</div>
+      <div class="user-meta">
+        <div class="user-name">Amina Odhiambo</div>
+        <div class="user-role">Warehouse Manager</div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main Wrapper -->
+  <div class="main-wrapper">
+    
+    <!-- Header -->
+    <header class="top-header">
+      <div class="header-left">
+        <div class="depot-pill">
+          <span class="status-dot"></span>
+          <span>Nairobi Central (NBO-01)</span>
+        </div>
+      </div>
+
+      <div class="header-right">
+        <div class="time-badge" id="nairobiClock">19:30:00 EAT (Nairobi)</div>
+        <div class="api-status" id="apiStatusIndicator">
+          <span class="status-dot"></span>
+          <span>Checking API...</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Content Body -->
+    <main class="content-body">
+
+      <!-- View: Overview -->
+      <section id="view-overview" class="view-section active">
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">Warehouse Executive Overview</h1>
+            <p class="page-desc">Real-time stock valuation, inventory health, and depot throughput across Nairobi depots.</p>
+          </div>
+          <button class="btn btn-primary" onclick="navigateTo('barcode')">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M3 5v14M8 5v14M12 5v14M17 5v14M21 5v14"></path>
+            </svg>
+            <span>Scan Barcode (GS1)</span>
+          </button>
+        </div>
+
+        <!-- KPI Grid -->
+        <div class="kpi-grid">
+          <div class="kpi-card" style="--card-accent: var(--accent-emerald);">
+            <div class="kpi-icon" style="--icon-bg: rgba(16, 185, 129, 0.12); --icon-color: var(--accent-emerald);">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="12" y1="1" x2="12" y2="23"></line>
+                <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+              </svg>
+            </div>
+            <div class="kpi-content">
+              <div class="kpi-label">Total Inventory Valuation</div>
+              <div class="kpi-value" id="kpiTotalValuation">KES 0.00</div>
+              <div class="kpi-sub">FIFO cost methodology</div>
+            </div>
+          </div>
+
+          <div class="kpi-card" style="--card-accent: var(--accent-blue);">
+            <div class="kpi-icon" style="--icon-bg: rgba(59, 130, 246, 0.12); --icon-color: var(--accent-blue);">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+              </svg>
+            </div>
+            <div class="kpi-content">
+              <div class="kpi-label">Physical Units On Hand</div>
+              <div class="kpi-value" id="kpiTotalUnits">0 Units</div>
+              <div class="kpi-sub">Across 3 active depots</div>
+            </div>
+          </div>
+
+          <div class="kpi-card" style="--card-accent: var(--accent-amber);">
+            <div class="kpi-icon" style="--icon-bg: rgba(245, 158, 11, 0.12); --icon-color: var(--accent-amber);">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                <line x1="12" y1="9" x2="12" y2="13"></line>
+                <line x1="12" y1="17" x2="12.01" y2="17"></line>
+              </svg>
+            </div>
+            <div class="kpi-content">
+              <div class="kpi-label">Low Stock Reorder Triggers</div>
+              <div class="kpi-value" id="kpiLowStockCount" style="color:var(--accent-amber);">0</div>
+              <div class="kpi-sub">Automated supplier reorder alerts</div>
+            </div>
+          </div>
+
+          <div class="kpi-card" style="--card-accent: var(--accent-cyan);">
+            <div class="kpi-icon" style="--icon-bg: rgba(6, 182, 212, 0.12); --icon-color: var(--accent-cyan);">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <polyline points="12 6 12 12 16 14"></polyline>
+              </svg>
+            </div>
+            <div class="kpi-content">
+              <div class="kpi-label">Active Reservations</div>
+              <div class="kpi-value" id="kpiPendingReservations">0</div>
+              <div class="kpi-sub">2h sliding expiry window</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Inventory Preview Table -->
+        <div class="panel">
+          <div class="panel-header">
+            <h2 class="panel-title">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+              </svg>
+              <span>High-Velocity FMCG Inventory Snapshot</span>
+            </h2>
+            <button class="btn btn-secondary btn-sm" onclick="navigateTo('inventory')">View All Stock</button>
+          </div>
+          <div class="table-responsive">
+            <table class="data-table" id="overviewInventoryTable">
+              <thead>
+                <tr>
+                  <th>SKU / Barcode</th>
+                  <th>Product Details</th>
+                  <th>Batch / Expiry</th>
+                  <th>On Hand</th>
+                  <th>Reserved</th>
+                  <th>Available</th>
+                  <th>Unit Cost</th>
+                  <th>Health</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- View: Depots -->
+      <section id="view-depots" class="view-section">
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">Nairobi Multi-Depot Network</h1>
+            <p class="page-desc">Overview of storage zones (Receiving, Storage, Picking, Shipping, Returns) and bin capacities.</p>
+          </div>
+        </div>
+        <div class="depot-grid" id="depotsContainer"></div>
+      </section>
+
+      <!-- View: Inventory -->
+      <section id="view-inventory" class="view-section">
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">Stock & Bin Management</h1>
+            <p class="page-desc">Complete SKU ledger with batch tracking, expiry dates, and bin location allocation.</p>
+          </div>
+          <button class="btn btn-primary" onclick="openReceiveModal(1)">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            <span>Inbound Receive Stock</span>
+          </button>
+        </div>
+
+        <div class="panel">
+          <div class="table-responsive">
+            <table class="data-table" id="fullInventoryTable">
+              <thead>
+                <tr>
+                  <th>SKU / Barcode</th>
+                  <th>Product Details</th>
+                  <th>Batch / Expiry</th>
+                  <th>On Hand</th>
+                  <th>Reserved</th>
+                  <th>Available</th>
+                  <th>Unit Cost</th>
+                  <th>Health Status</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- View: Reservations -->
+      <section id="view-reservations" class="view-section">
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">Active Order Reservations & Backorders</h1>
+            <p class="page-desc">Sliding 2-hour reservation holds with concurrency protection and automatic stock release.</p>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-header">
+            <h2 class="panel-title">Active Customer Reservations</h2>
+          </div>
+          <div class="table-responsive">
+            <table class="data-table" id="reservationsTable">
+              <thead>
+                <tr>
+                  <th>Order Ref</th>
+                  <th>SKU</th>
+                  <th>Hold Qty</th>
+                  <th>Status</th>
+                  <th>Sliding Expiry</th>
+                  <th>Fulfillment Action</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- View: Barcode Scanner -->
+      <section id="view-barcode" class="view-section">
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">GS1-128 & EAN-13 Barcode Scanner</h1>
+            <p class="page-desc">Simulate handheld optical barcode scans, parse GS1 Application Identifiers, and lookup bins instantly.</p>
+          </div>
+        </div>
+
+        <div class="scanner-box">
+          <div class="scanner-laser-line"></div>
+          
+          <form id="scannerForm" style="display:flex; gap:12px; margin-bottom:16px;">
+            <input type="text" id="barcodeInput" class="form-input" style="font-family:var(--font-mono); font-size:1rem;" placeholder="Scan or enter GS1-128 code e.g. (01)06161103456782(10)BAT-RIN-2026(17)271031" value="(01)06161103456782(10)BAT-RIN-2026(17)271031">
+            <button type="submit" class="btn btn-primary" style="white-space:nowrap;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M3 5v14M8 5v14M12 5v14M17 5v14M21 5v14"></path>
+              </svg>
+              <span>Scan Barcode</span>
+            </button>
+          </form>
+
+          <div style="font-size:0.8rem; color:var(--text-muted); margin-bottom:12px;">Quick Demo Presets:</div>
+          <div style="display:flex; flex-wrap:wrap; gap:8px;">
+            <button class="btn btn-secondary btn-sm" onclick="document.getElementById('barcodeInput').value='(01)06161103456782(10)BAT-RIN-2026(17)271031'; simulateScan(document.getElementById('barcodeInput').value);">Rina Cooking Oil 5L (GS1-128)</button>
+            <button class="btn btn-secondary btn-sm" onclick="document.getElementById('barcodeInput').value='06161101234566'; simulateScan(document.getElementById('barcodeInput').value);">Pembe Flour 2kg (EAN-13)</button>
+            <button class="btn btn-secondary btn-sm" onclick="document.getElementById('barcodeInput').value='06161105678906'; simulateScan(document.getElementById('barcodeInput').value);">Brookside Milk 500ml (EAN-13)</button>
+            <button class="btn btn-secondary btn-sm" onclick="document.getElementById('barcodeInput').value='06161106789013'; simulateScan(document.getElementById('barcodeInput').value);">Omo Detergent 1kg (EAN-13)</button>
+          </div>
+
+          <div id="scanResult" style="margin-top:20px;"></div>
+        </div>
+      </section>
+
+      <!-- View: Reports -->
+      <section id="view-reports" class="view-section">
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">Executive Reports & Data Export</h1>
+            <p class="page-desc">Generate pixel-perfect JasperReports PDFs and formula-driven Apache POI Excel workbooks.</p>
+          </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:20px;">
+          <div class="panel">
+            <div class="panel-header">
+              <h2 class="panel-title">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                  <polyline points="14 2 14 8 20 8"></polyline>
+                </svg>
+                <span>JasperReports PDF Export</span>
+              </h2>
+            </div>
+            <div class="panel-body">
+              <p style="font-size:0.88rem; color:var(--text-secondary); margin-bottom:18px;">
+                Precompiled binary `.jasper` templates with custom headers, depot totals, and barcode renders.
+              </p>
+              <div style="display:flex; flex-direction:column; gap:10px;">
+                <a href="https://github.com/crnjihia/stockroom-wms/releases/download/v1.0.0/inventory_report.pdf" target="_blank" class="btn btn-secondary">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="7 10 12 15 17 10"></polyline>
+                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                  </svg>
+                  <span>Download Inventory Report (PDF)</span>
+                </a>
+                <a href="https://github.com/crnjihia/stockroom-wms/releases/download/v1.0.0/low_stock_report.pdf" target="_blank" class="btn btn-secondary">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="7 10 12 15 17 10"></polyline>
+                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                  </svg>
+                  <span>Download Low-Stock Triggers (PDF)</span>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-header">
+              <h2 class="panel-title">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                  <polyline points="14 2 14 8 20 8"></polyline>
+                </svg>
+                <span>Apache POI Excel (XLSX)</span>
+              </h2>
+            </div>
+            <div class="panel-body">
+              <p style="font-size:0.88rem; color:var(--text-secondary); margin-bottom:18px;">
+                Styled multi-sheet workbooks with currency formatting, auto-sized columns, and live Excel formulas.
+              </p>
+              <div style="display:flex; flex-direction:column; gap:10px;">
+                <a href="https://github.com/crnjihia/stockroom-wms/releases/download/v1.0.0/inventory_report.xlsx" target="_blank" class="btn btn-secondary">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="7 10 12 15 17 10"></polyline>
+                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                  </svg>
+                  <span>Download Inventory Ledger (XLSX)</span>
+                </a>
+                <a href="https://github.com/crnjihia/stockroom-wms/releases/download/v1.0.0/valuation_report.xlsx" target="_blank" class="btn btn-secondary">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="7 10 12 15 17 10"></polyline>
+                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                  </svg>
+                  <span>Download FIFO Valuation (XLSX)</span>
+                </a>
+                <a href="https://github.com/crnjihia/stockroom-wms/releases/download/v1.0.0/movements_report.xlsx" target="_blank" class="btn btn-secondary">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="7 10 12 15 17 10"></polyline>
+                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                  </svg>
+                  <span>Download Movements Audit (XLSX)</span>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- View: Movements -->
+      <section id="view-movements" class="view-section">
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">Stock Movements & Audit Ledger</h1>
+            <p class="page-desc">Immutable append-only ledger tracking every stock inbound, transfer, pick, and return.</p>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="table-responsive">
+            <table class="data-table" id="movementsTable">
+              <thead>
+                <tr>
+                  <th>Time</th>
+                  <th>SKU</th>
+                  <th>Location Bin</th>
+                  <th>Movement Type</th>
+                  <th>Quantity</th>
+                  <th>Reference</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+</div>
+
+<!-- Modal Inbound Receiving -->
+<div class="modal-backdrop" id="receiveModal">
+  <div class="modal-window">
+    <div class="modal-header">
+      <h3 class="modal-title">Inbound Stock Receipt (GRN)</h3>
+      <button class="modal-close" onclick="closeReceiveModal()">&times;</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="receiveProductId">
+      <div style="margin-bottom:14px; font-weight:600; color:#60a5fa;" id="receiveProductTitle">Product Name</div>
+
+      <div class="form-group">
+        <label class="form-label">Receiving Location Bin</label>
+        <select class="form-select" id="receiveLocation">
+          <option value="A-01-01">NBO-01 Storage Bin A-01-01</option>
+          <option value="A-01-02">NBO-01 Storage Bin A-01-02</option>
+          <option value="PCK-01">NBO-01 Picking Bin PCK-01</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Receipt Quantity (Units / Bundles)</label>
+        <input type="number" class="form-input" id="receiveQty" min="1" value="100">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Batch / Lot Number</label>
+        <input type="text" class="form-input" id="receiveBatch" value="BAT-2026-NBO">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeReceiveModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="submitReceiveStock()">Confirm Receipt</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast Container -->
+<div class="toast-container" id="toastContainer"></div>
+
+<script src="js/app.js"></script>
+</body>
+</html>
