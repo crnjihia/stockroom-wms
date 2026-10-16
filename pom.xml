@@ -240,4 +240,12 @@
             </plugin>
         </plugins>
     </build>
+
+    <distributionManagement>
+        <repository>
+            <id>github</id>
+            <name>GitHub Packages Apache Maven</name>
+            <url>https://maven.pkg.github.com/crnjihia/stockroom-wms</url>
+        </repository>
+    </distributionManagement>
 </project>
