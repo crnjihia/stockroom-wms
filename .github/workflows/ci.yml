@@ -6,9 +6,24 @@ on:
   pull_request:
     branches: [ main, master ]
 
+permissions:
+  contents: read
+
 jobs:
   build:
+    name: Build & Verify
     runs-on: ubuntu-latest
+
+    services:
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
 
     steps:
       - name: Checkout repository
@@ -22,4 +37,4 @@ jobs:
           cache: maven
 
       - name: Build and Test with Maven
-        run: mvn -B clean verify --file pom.xml
+        run: mvn -B clean verify --file pom.xml -Djava.awt.headless=true

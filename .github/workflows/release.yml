@@ -25,7 +25,7 @@ jobs:
           cache: maven
 
       - name: Build Release Artifacts with Maven
-        run: mvn -B clean package --file pom.xml
+        run: mvn -B clean package -DskipTests --file pom.xml
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2

@@ -30,6 +30,7 @@ jobs:
       - name: Deploy to GitHub Packages
         run: mvn -B clean deploy -DskipTests --file pom.xml -s ${{ github.workspace }}/settings.xml
         env:
+          GITHUB_ACTOR: ${{ github.actor }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   publish-docker:

@@ -11,7 +11,7 @@
         <relativePath/>
     </parent>
 
-    <groupId>com.stockroom</groupId>
+    <groupId>com.github.crnjihia</groupId>
     <artifactId>stockroom-wms</artifactId>
     <version>1.0.0</version>
     <name>stockroom-wms</name>
@@ -236,6 +236,14 @@
                             <artifactId>lombok</artifactId>
                         </exclude>
                     </excludes>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.2.5</version>
+                <configuration>
+                    <argLine>-Djava.awt.headless=true</argLine>
                 </configuration>
             </plugin>
         </plugins>
