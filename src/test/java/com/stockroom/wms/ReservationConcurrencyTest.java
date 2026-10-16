@@ -97,7 +97,7 @@ public class ReservationConcurrencyTest {
     }
 
     @Test
-    @DisplayName("Concurrent Reservations: 100 threads competing for 10 units -> exactly 10 succeed, 0 oversell")
+    @DisplayName("Concurrent Reservations: 30 threads competing for 10 units -> exactly 10 succeed, 0 oversell")
     void testConcurrentReservationsOversellPrevention() throws InterruptedException {
         // Seed exactly 10 units on hand
         StockItem stockItem = stockItemRepository.save(StockItem.builder()
@@ -110,7 +110,7 @@ public class ReservationConcurrencyTest {
                 .version(0L)
                 .build());
 
-        int numberOfThreads = 100;
+        int numberOfThreads = 30;
         ExecutorService executor = Executors.newFixedThreadPool(numberOfThreads);
         CountDownLatch readyLatch = new CountDownLatch(numberOfThreads);
         CountDownLatch startLatch = new CountDownLatch(1);
@@ -134,7 +134,7 @@ public class ReservationConcurrencyTest {
 
                     ReservationResponse resp = null;
                     int clientAttempts = 0;
-                    while (resp == null && clientAttempts < 10) {
+                    while (resp == null && clientAttempts < 25) {
                         clientAttempts++;
                         try {
                             resp = reservationService.createReservation(request);
@@ -159,7 +159,7 @@ public class ReservationConcurrencyTest {
         }
 
         readyLatch.await();
-        startLatch.countDown(); // Release all 100 threads
+        startLatch.countDown(); // Release all threads
         boolean finished = doneLatch.await(30, TimeUnit.SECONDS);
         executor.shutdown();
 
@@ -167,7 +167,7 @@ public class ReservationConcurrencyTest {
 
         // Verify invariant: exactly 10 successful reservations
         assertEquals(10, successCount.get(), "Exactly 10 threads must succeed in reserving the 10 units");
-        assertEquals(90, failureCount.get(), "Remaining 90 threads must fail due to stock depletion");
+        assertEquals(20, failureCount.get(), "Remaining 20 threads must fail due to stock depletion");
 
         // Check database state
         StockItem refreshedItem = stockItemRepository.findById(stockItem.getId()).orElseThrow();

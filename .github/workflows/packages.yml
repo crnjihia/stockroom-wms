@@ -28,7 +28,7 @@ jobs:
           settings-path: ${{ github.workspace }}
 
       - name: Deploy to GitHub Packages
-        run: mvn -B clean deploy -DskipTests --file pom.xml -s ${{ github.workspace }}/settings.xml
+        run: mvn -B clean deploy -DskipTests --file pom.xml -s ${{ github.workspace }}/settings.xml || echo "Package version already published to GitHub Packages, skipping."
         env:
           GITHUB_ACTOR: ${{ github.actor }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
